@@ -57,62 +57,38 @@
         border-radius: 5px;
         cursor: pointer;
     }
-    .armor-section {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 20px;
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
     }
-    .armor {
-        border: 2px solid #ccc;
-        border-radius: 10px;
-        padding: 15px;
-        width: 200px;
-        background-color: #fff;
-        transition: box-shadow 0.3s;
-    }
-    .armor:hover {
-        box-shadow: 0 0 10px rgba(0,0,0,0.2);
-    }
-    .armor-title {
+    th, td {
+        border: 1px solid #ccc;
+        padding: 8px;
         text-align: center;
-        font-weight: bold;
-        margin-bottom: 10px;
     }
-    .parts {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
-    .part {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+    th {
+        background-color: #efefef;
     }
     .level {
-        padding: 5px 10px;
+        padding: 3px 8px;
         border-radius: 5px;
         color: #fff;
         font-weight: bold;
         cursor: pointer;
-        margin-right: 3px;
         border: 1px solid #999;
     }
     /* Warna untuk level */
     .common {
-        background-color: white;
+        background-color: #fff;
         color: #555;
+        border: 1px solid #ccc;
     }
     .magic {
         background-color: green;
     }
     .rare {
         background-color: blue;
-    }
-    /* Header style */
-    header {
-        text-align: center;
-        margin-bottom: 20px;
     }
     #saveButton {
         display: block;
@@ -190,65 +166,71 @@ function renderCharacters() {
         headerDiv.appendChild(removeBtn);
         characterDiv.appendChild(headerDiv);
 
-        // List equipment
-        const armorSection = document.createElement('div');
-        armorSection.className = 'armor-section';
+        // Tampilkan data equipment dalam tabel
+        if (character.equipment && character.equipment.parts && character.equipment.levels) {
+            const table = document.createElement('table');
 
-        // Hanya satu equipment per karakter
-        if (character.equipment) {
-            const item = character.equipment;
-            const armorDiv = document.createElement('div');
-            armorDiv.className = 'armor';
-
-            const title = document.createElement('div');
-            title.className = 'armor-title';
-            title.innerText = item.name;
-            armorDiv.appendChild(title);
-
-            const partsDiv = document.createElement('div');
-            partsDiv.className = 'parts';
-
-            item.parts.forEach(part => {
-                const partDiv = document.createElement('div');
-                partDiv.className = 'part';
-
-                const partName = document.createElement('div');
-                partName.innerText = part;
-
-                const levelDiv = document.createElement('div');
-                // Tombol level
-                equipmentLevels.forEach(level => {
-                    const levelSpan = document.createElement('span');
-                    levelSpan.innerText = level.level;
-                    levelSpan.className = `level ${level.colorClass}`;
-                    levelSpan.onclick = () => {
-                        // Update level
-                        if (!character.equipment.levels) character.equipment.levels = {};
-                        character.equipment.levels[part] = level.level;
-                        saveData();
-                        renderCharacters();
-                    };
-                    // Tandai level saat ini
-                    if (character.equipment.levels && character.equipment.levels[part] === level.level) {
-                        levelSpan.style.border = '2px solid #000';
-                    } else {
-                        levelSpan.style.border = '';
-                    }
-                    levelDiv.appendChild(levelSpan);
-                });
-                partDiv.appendChild(partName);
-                partDiv.appendChild(levelDiv);
-                partsDiv.appendChild(partDiv);
+            // Header tabel
+            const thead = document.createElement('thead');
+            const headerRow = document.createElement('tr');
+            ['Bagian', 'Level'].forEach(text => {
+                const th = document.createElement('th');
+                th.innerText = text;
+                headerRow.appendChild(th);
             });
-            armorDiv.appendChild(partsDiv);
-            armorSection.appendChild(armorDiv);
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+
+            // Isi tabel
+            const tbody = document.createElement('tbody');
+            character.equipment.parts.forEach(part => {
+                const row = document.createElement('tr');
+
+                const partTd = document.createElement('td');
+                partTd.innerText = part;
+
+                const levelTd = document.createElement('td');
+                const levelSpan = document.createElement('span');
+                levelSpan.innerText = character.equipment.levels[part] || 'Belum Dipilih';
+                levelSpan.className = 'level ' + (function() {
+                    const lvl = character.equipment.levels[part];
+                    if (lvl === 'Common') return 'common';
+                    if (lvl === 'Magic') return 'magic';
+                    if (lvl === 'Rare') return 'rare';
+                    return '';
+                })();
+                levelSpan.onclick = () => {
+                    // Ganti level
+                    const currentLevel = character.equipment.levels[part];
+                    let nextLevelIndex = 0;
+                    if (currentLevel === 'Common') nextLevelIndex = 1;
+                    else if (currentLevel === 'Magic') nextLevelIndex = 2;
+                    else if (currentLevel === 'Rare') nextLevelIndex = 0;
+                    else nextLevelIndex = 0;
+
+                    character.equipment.levels[part] = equipmentLevels[nextLevelIndex].level;
+                    saveData();
+                    renderCharacters();
+                };
+                levelTd.appendChild(levelSpan);
+                row.appendChild(partTd);
+                row.appendChild(levelTd);
+                tbody.appendChild(row);
+            });
+            table.appendChild(tbody);
+            characterDiv.appendChild(table);
+        } else {
+            // Jika belum ada data, tampilkan pesan
+            const p = document.createElement('p');
+            p.innerText = 'Data equipment belum disimpan.';
+            characterDiv.appendChild(p);
         }
-        characterDiv.appendChild(armorSection);
+
         charactersContainer.appendChild(characterDiv);
     });
 }
 
-// Tambahkan karakter baru
+// Tambah karakter baru
 characterForm.onsubmit = (e) => {
     e.preventDefault();
     const name = characterNameInput.value.trim();
@@ -256,7 +238,7 @@ characterForm.onsubmit = (e) => {
     const newChar = {
         name: name,
         equipment: {
-            name: 'Equipment', // Nama default, bisa diganti
+            name: 'Equipment',
             parts: [...parts],
             levels: {} // level per bagian
         }
