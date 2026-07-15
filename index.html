@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Update Progress Equipment Lineage W</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f8f8;
+        margin: 20px;
+    }
+    h1 {
+        text-align: center;
+        color: #333;
+    }
+    .header-section {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    #characterForm {
+        margin-bottom: 20px;
+    }
+    #characterForm input[type="text"] {
+        padding: 8px;
+        font-size: 16px;
+        width: 250px;
+        margin-right: 10px;
+    }
+    #characterForm button {
+        padding: 8px 12px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    .character-container {
+        margin-bottom: 40px;
+        border: 2px solid #ccc;
+        border-radius: 10px;
+        padding: 15px;
+        background-color: #fff;
+    }
+    .character-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    .character-name {
+        font-size: 20px;
+        font-weight: bold;
+    }
+    .remove-btn {
+        background-color: #e74c3c;
+        color: #fff;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .armor-section {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+    }
+    .armor {
+        border: 2px solid #ccc;
+        border-radius: 10px;
+        padding: 15px;
+        width: 200px;
+        background-color: #fff;
+        transition: box-shadow 0.3s;
+    }
+    .armor:hover {
+        box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+    .armor-title {
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    .parts {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    .part {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .level {
+        padding: 5px 10px;
+        border-radius: 5px;
+        color: #fff;
+        font-weight: bold;
+        cursor: pointer;
+        margin-right: 3px;
+        border: 1px solid #999;
+    }
+    /* Warna untuk level */
+    .common {
+        background-color: white;
+        color: #555;
+    }
+    .magic {
+        background-color: green;
+    }
+    .rare {
+        background-color: blue;
+    }
+    /* Header style */
+    header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    #saveButton {
+        display: block;
+        margin: 20px auto;
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #3498db;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+    #saveButton:hover {
+        background-color: #2980b9;
+    }
+</style>
+</head>
+<body>
+<div class="header-section">
+    <h1>Update Progress Equipment - Lineage W</h1>
+    <p>Armor Equipment Progress - Common (Putih), Magic (Hijau), Rare (Biru)</p>
+    <form id="characterForm">
+        <input type="text" id="characterNameInput" placeholder="Masukkan nama karakter" required />
+        <button type="submit">Tambah Karakter</button>
+    </form>
+</div>
+
+<div id="charactersContainer"></div>
+<button id="saveButton">Simpan</button>
+
+<script>
+const parts = ['Head', 'Body', 'Hand', 'Legs', 'Foot', 'Shirt', 'Shoulder', 'Weapon', 'Secondary Weapon', 'Mantle'];
+const equipmentLevels = [
+    { level: 'Common', colorClass: 'common' },
+    { level: 'Magic', colorClass: 'magic' },
+    { level: 'Rare', colorClass: 'rare' }
+];
+
+const charactersContainer = document.getElementById('charactersContainer');
+const characterForm = document.getElementById('characterForm');
+const characterNameInput = document.getElementById('characterNameInput');
+const saveButton = document.getElementById('saveButton');
+
+let characters = JSON.parse(localStorage.getItem('characters')) || [];
+
+function saveData() {
+    localStorage.setItem('characters', JSON.stringify(characters));
+}
+
+// Render semua data karakter
+function renderCharacters() {
+    charactersContainer.innerHTML = '';
+    characters.forEach((character, index) => {
+        const characterDiv = document.createElement('div');
+        characterDiv.className = 'character-container';
+
+        // Header nama dan hapus
+        const headerDiv = document.createElement('div');
+        headerDiv.className = 'character-header';
+
+        const nameDiv = document.createElement('div');
+        nameDiv.className = 'character-name';
+        nameDiv.innerText = character.name;
+
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'remove-btn';
+        removeBtn.innerText = 'Hapus';
+        removeBtn.onclick = () => {
+            characters.splice(index, 1);
+            saveData();
+            renderCharacters();
+        };
+
+        headerDiv.appendChild(nameDiv);
+        headerDiv.appendChild(removeBtn);
+        characterDiv.appendChild(headerDiv);
+
+        // List equipment
+        const armorSection = document.createElement('div');
+        armorSection.className = 'armor-section';
+
+        // Hanya satu equipment per karakter
+        if (character.equipment) {
+            const item = character.equipment;
+            const armorDiv = document.createElement('div');
+            armorDiv.className = 'armor';
+
+            const title = document.createElement('div');
+            title.className = 'armor-title';
+            title.innerText = item.name;
+            armorDiv.appendChild(title);
+
+            const partsDiv = document.createElement('div');
+            partsDiv.className = 'parts';
+
+            item.parts.forEach(part => {
+                const partDiv = document.createElement('div');
+                partDiv.className = 'part';
+
+                const partName = document.createElement('div');
+                partName.innerText = part;
+
+                const levelDiv = document.createElement('div');
+                // Tombol level
+                equipmentLevels.forEach(level => {
+                    const levelSpan = document.createElement('span');
+                    levelSpan.innerText = level.level;
+                    levelSpan.className = `level ${level.colorClass}`;
+                    levelSpan.onclick = () => {
+                        // Update level
+                        if (!character.equipment.levels) character.equipment.levels = {};
+                        character.equipment.levels[part] = level.level;
+                        saveData();
+                        renderCharacters();
+                    };
+                    // Tandai level saat ini
+                    if (character.equipment.levels && character.equipment.levels[part] === level.level) {
+                        levelSpan.style.border = '2px solid #000';
+                    } else {
+                        levelSpan.style.border = '';
+                    }
+                    levelDiv.appendChild(levelSpan);
+                });
+                partDiv.appendChild(partName);
+                partDiv.appendChild(levelDiv);
+                partsDiv.appendChild(partDiv);
+            });
+            armorDiv.appendChild(partsDiv);
+            armorSection.appendChild(armorDiv);
+        }
+        characterDiv.appendChild(armorSection);
+        charactersContainer.appendChild(characterDiv);
+    });
+}
+
+// Tambahkan karakter baru
+characterForm.onsubmit = (e) => {
+    e.preventDefault();
+    const name = characterNameInput.value.trim();
+    if (name === '') return;
+    const newChar = {
+        name: name,
+        equipment: {
+            name: 'Equipment', // Nama default, bisa diganti
+            parts: [...parts],
+            levels: {} // level per bagian
+        }
+    };
+    characters.push(newChar);
+    saveData();
+    renderCharacters();
+    characterNameInput.value = '';
+};
+
+// Tombol Simpan
+saveButton.onclick = () => {
+    saveData();
+    alert('Data berhasil disimpan!');
+};
+
+renderCharacters();
+</script>
+</body>
+</html>
