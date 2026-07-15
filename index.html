@@ -102,6 +102,7 @@
     .common {
         background-color: white;
         color: #555;
+        border: 1px solid #ccc;
     }
     .magic {
         background-color: green;
@@ -194,7 +195,6 @@ function renderCharacters() {
         const armorSection = document.createElement('div');
         armorSection.className = 'armor-section';
 
-        // Hanya satu equipment per karakter
         if (character.equipment) {
             const item = character.equipment;
             const armorDiv = document.createElement('div');
@@ -256,7 +256,7 @@ characterForm.onsubmit = (e) => {
     const newChar = {
         name: name,
         equipment: {
-            name: 'Equipment', // Nama default, bisa diganti
+            name: 'Equipment', // Nama default
             parts: [...parts],
             levels: {} // level per bagian
         }
