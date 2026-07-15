@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lineage W Equipment Progress Tracker</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+<header>
+
+    <h1>
+        <i class="fa-solid fa-shield-halved"></i>
+        Lineage W Equipment Tracker
+    </h1>
+
+    <p>Progress Equipment Semua Karakter</p>
+
+</header>
+
+
+<!-- ================= DASHBOARD ================= -->
+
+<section class="dashboard">
+
+    <div class="card">
+        <h3>Total Karakter</h3>
+        <h1 id="totalCharacter">0</h1>
+    </div>
+
+    <div class="card">
+        <h3>Total Equipment</h3>
+        <h1 id="totalEquipment">0</h1>
+    </div>
+
+    <div class="card">
+        <h3>Equipment Rare</h3>
+        <h1 id="totalRare">0</h1>
+    </div>
+
+    <div class="card">
+        <h3>Progress Keseluruhan</h3>
+
+        <div class="progress">
+
+            <div class="progress-bar"
+                 id="overallProgressBar">
+            </div>
+
+        </div>
+
+        <span id="overallProgressText">
+            0%
+        </span>
+
+    </div>
+
+</section>
+
+
+
+<!-- ================= MENU ================= -->
+
+<section class="menu">
+
+    <div class="left">
+
+        <button id="btnAddCharacter">
+
+            <i class="fa-solid fa-plus"></i>
+
+            Tambah Karakter
+
+        </button>
+
+    </div>
+
+    <div class="right">
+
+        <input
+            type="text"
+            id="searchCharacter"
+            placeholder="Cari karakter...">
+
+    </div>
+
+</section>
+
+
+
+
+<!-- ================= FORM ================= -->
+
+<section
+id="characterForm"
+class="hidden">
+
+    <div class="form-card">
+
+        <h2>Tambah Karakter</h2>
+
+        <input
+        type="text"
+        id="characterName"
+        placeholder="Nama karakter">
+
+        <div class="button-group">
+
+            <button id="saveCharacter">
+
+                Simpan
+
+            </button>
+
+            <button id="cancelCharacter">
+
+                Batal
+
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+
+
+<!-- ================= TABLE ================= -->
+
+<section class="table-container">
+
+<table id="equipmentTable">
+
+<thead>
+
+<tr>
+
+<th width="200">
+Karakter
+</th>
+
+<th>Head</th>
+
+<th>Body</th>
+
+<th>Hand</th>
+
+<th>Legs</th>
+
+<th>Foot</th>
+
+<th>Shirt</th>
+
+<th>Shoulder</th>
+
+<th>Weapon</th>
+
+<th>Secondary</th>
+
+<th>Mantle</th>
+
+<th width="120">
+Progress
+</th>
+
+<th width="120">
+Action
+</th>
+
+</tr>
+
+</thead>
+
+<tbody id="tableBody">
+
+<!-- Isi tabel otomatis -->
+
+</tbody>
+
+</table>
+
+</section>
+
+
+
+
+
+
+<!-- ================= LEGEND ================= -->
+
+<section class="legend">
+
+<h3>Status Equipment</h3>
+
+<div class="legend-item">
+
+<div class="status none"></div>
+
+Belum Ada
+
+</div>
+
+<div class="legend-item">
+
+<div class="status common"></div>
+
+Common
+
+</div>
+
+<div class="legend-item">
+
+<div class="status magic"></div>
+
+Magic
+
+</div>
+
+<div class="legend-item">
+
+<div class="status rare"></div>
+
+Rare
+
+</div>
+
+</section>
+
+
+
+
+
+<!-- ================= MODAL ================= -->
+
+<div
+id="equipmentModal"
+class="modal hidden">
+
+<div class="modal-content">
+
+<h2 id="modalTitle">
+
+Equipment
+
+</h2>
+
+<div class="status-list">
+
+<button
+class="statusBtn"
+data-value="0">
+
+Belum Ada
+
+</button>
+
+<button
+class="statusBtn commonBtn"
+data-value="1">
+
+Common
+
+</button>
+
+<button
+class="statusBtn magicBtn"
+data-value="2">
+
+Magic
+
+</button>
+
+<button
+class="statusBtn rareBtn"
+data-value="3">
+
+Rare
+
+</button>
+
+</div>
+
+<button id="closeModal">
+
+Tutup
+
+</button>
+
+</div>
+
+</div>
+
+
+
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+<p>
+
+Lineage W Equipment Tracker
+
+<br>
+
+Powered by HTML • CSS • JavaScript
+
+</p>
+
+</footer>
+
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
